@@ -20,7 +20,7 @@ export function ComplaintsPage() {
   });
 
   const addComplaintMutation = useMutation({
-    mutationFn: async (data: typeof formData) => {
+    mutationFn: async (data) => {
       const response = await fetch("/api/user/add-complaint", {
         method: "POST",
         headers: {
@@ -50,7 +50,7 @@ export function ComplaintsPage() {
         contactPreference: ""
       });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to submit complaint",
@@ -59,7 +59,7 @@ export function ComplaintsPage() {
     }
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     
     if (!formData.subject.trim() || !formData.description.trim()) {
@@ -74,7 +74,7 @@ export function ComplaintsPage() {
     addComplaintMutation.mutate(formData);
   };
 
-  const handleInputChange = (field: keyof typeof formData, value: string) => {
+  const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 

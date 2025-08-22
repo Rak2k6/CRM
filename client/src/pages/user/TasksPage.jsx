@@ -21,7 +21,7 @@ export function TasksPage() {
   });
 
   const addTaskMutation = useMutation({
-    mutationFn: async (data: typeof formData) => {
+    mutationFn: async (data) => {
       const response = await fetch("/api/user/add-task", {
         method: "POST",
         headers: {
@@ -52,7 +52,7 @@ export function TasksPage() {
         notes: ""
       });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to add task",
@@ -61,7 +61,7 @@ export function TasksPage() {
     }
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     
     if (!formData.title.trim()) {
@@ -76,7 +76,7 @@ export function TasksPage() {
     addTaskMutation.mutate(formData);
   };
 
-  const handleInputChange = (field: keyof typeof formData, value: string) => {
+  const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 

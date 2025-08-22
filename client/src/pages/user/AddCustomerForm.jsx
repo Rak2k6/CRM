@@ -25,7 +25,7 @@ export function AddCustomerForm() {
   });
 
   const addCustomerMutation = useMutation({
-    mutationFn: async (data: typeof formData) => {
+    mutationFn: async (data) => {
       const response = await fetch("/api/user/add-customer", {
         method: "POST",
         headers: {
@@ -61,7 +61,7 @@ export function AddCustomerForm() {
         notes: ""
       });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to add customer",
@@ -70,7 +70,7 @@ export function AddCustomerForm() {
     }
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     
     if (!formData.name.trim() || !formData.email.trim() || !formData.phone.trim()) {
@@ -85,7 +85,7 @@ export function AddCustomerForm() {
     addCustomerMutation.mutate(formData);
   };
 
-  const handleInputChange = (field: keyof typeof formData, value: string) => {
+  const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 

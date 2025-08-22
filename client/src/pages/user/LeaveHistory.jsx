@@ -12,20 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, Calendar, Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 
-interface UserLeave {
-  id: number;
-  userId: number;
-  leaveType: string;
-  startDate: string;
-  endDate: string;
-  totalDays: number;
-  reason: string;
-  status: "pending" | "approved" | "rejected";
-  appliedAt: string;
-  approvedBy?: number;
-  approvedAt?: string;
-  rejectedReason?: string;
-}
+// Removed TS interface
 
 const leaveTypes = [
   { value: "sick", label: "Sick Leave" },
@@ -64,7 +51,7 @@ export function LeaveHistory() {
   });
 
   const applyLeaveMutation = useMutation({
-    mutationFn: async (data: typeof formData) => {
+    mutationFn: async (data) => {
       const response = await fetch("/api/user/leaves", {
         method: "POST",
         headers: {
@@ -90,7 +77,7 @@ export function LeaveHistory() {
       setFormData({ leaveType: "", startDate: "", endDate: "", reason: "" });
       queryClient.invalidateQueries({ queryKey: ["/api/user/leaves"] });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to apply for leave",
@@ -99,7 +86,7 @@ export function LeaveHistory() {
     }
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     
     if (!formData.leaveType || !formData.startDate || !formData.endDate || !formData.reason.trim()) {
@@ -126,7 +113,7 @@ export function LeaveHistory() {
     applyLeaveMutation.mutate(formData);
   };
 
-  const calculateDuration = (startDate: string, endDate: string) => {
+  const calculateDuration = (startDate, endDate) => {
     const start = new Date(startDate);
     const end = new Date(endDate);
     const diffTime = Math.abs(end.getTime() - start.getTime());
@@ -134,7 +121,7 @@ export function LeaveHistory() {
     return diffDays;
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -284,7 +271,7 @@ export function LeaveHistory() {
             </div>
           ) : (
             <div className="space-y-4">
-              {leaves.map((leave: UserLeave) => {
+              {leaves.map((leave) => {
                 const StatusIcon = statusIcons[leave.status];
                 return (
                   <div

@@ -15,18 +15,18 @@ import {
 import { Plus, Edit, Trash2, Mail, Phone, Calendar, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import type { Communication, Customer } from "@shared/schema";
+// Removed type-only imports for JS compatibility
 import PageHeader from "@/components/PageHeader";
 
 export default function Communications() {
   const { toast } = useToast();
   const [isAddCommunicationOpen, setIsAddCommunicationOpen] = useState(false);
   
-  const { data: communications = [], isLoading: communicationsLoading } = useQuery<Communication[]>({
+  const { data: communications = [], isLoading: communicationsLoading } = useQuery({
     queryKey: ["/api/communications"],
   });
 
-  const { data: customers = [], isLoading: customersLoading } = useQuery<Customer[]>({
+  const { data: customers = [], isLoading: customersLoading } = useQuery({
     queryKey: ["/api/customers"],
   });
 
@@ -50,53 +50,53 @@ export default function Communications() {
 
   const isLoading = communicationsLoading || customersLoading;
 
-  const getTypeIcon = (type: string) => {
+  const getTypeIcon = (type) => {
     const icons = {
       email: Mail,
       phone: Phone,
       meeting: Calendar,
       note: FileText,
     };
-    const Icon = icons[type as keyof typeof icons] || FileText;
+    const Icon = icons[type] || FileText;
     return <Icon className="h-4 w-4" />;
   };
 
-  const getTypeBadge = (type: string) => {
+  const getTypeBadge = (type) => {
     const typeConfig = {
-      email: { label: "Email", variant: "default" as const },
-      phone: { label: "Phone", variant: "secondary" as const },
-      meeting: { label: "Meeting", variant: "outline" as const },
-      note: { label: "Note", variant: "secondary" as const },
+      email: { label: "Email", variant: "default" },
+      phone: { label: "Phone", variant: "secondary" },
+      meeting: { label: "Meeting", variant: "outline" },
+      note: { label: "Note", variant: "secondary" },
     };
-    const config = typeConfig[type as keyof typeof typeConfig] || typeConfig.note;
+    const config = typeConfig[type] || typeConfig.note;
     return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
-  const getDirectionBadge = (direction: string) => {
+  const getDirectionBadge = (direction) => {
     const config = direction === "inbound" 
-      ? { label: "Inbound", variant: "default" as const }
-      : { label: "Outbound", variant: "secondary" as const };
+      ? { label: "Inbound", variant: "default" }
+      : { label: "Outbound", variant: "secondary" };
     return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
-  const getCustomerName = (customerId: string | null) => {
+  const getCustomerName = (customerId) => {
     if (!customerId) return "—";
     const customer = customers.find(c => c.id === customerId);
     return customer ? `${customer.firstName} ${customer.lastName}` : "Unknown Customer";
   };
 
-  const getCustomerCompany = (customerId: string | null) => {
+  const getCustomerCompany = (customerId) => {
     if (!customerId) return "—";
     const customer = customers.find(c => c.id === customerId);
     return customer?.company || "—";
   };
 
-  const formatDate = (date: Date | string | null) => {
+  const formatDate = (date) => {
     if (!date) return "—";
     return new Date(date).toLocaleString();
   };
 
-  const handleDelete = (communication: Communication) => {
+  const handleDelete = (communication) => {
     const customerName = getCustomerName(communication.customerId);
     if (window.confirm(`Are you sure you want to delete this communication with ${customerName}?`)) {
       deleteMutation.mutate(communication.id);
@@ -222,7 +222,7 @@ export default function Communications() {
                 </TableHeader>
                 <TableBody>
                   {communications
-                    .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime())
+                    .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
                     .map((communication) => (
                     <TableRow key={communication.id}>
                       <TableCell>

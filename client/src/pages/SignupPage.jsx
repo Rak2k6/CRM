@@ -34,15 +34,13 @@ const signupSchema = z.object({
   path: ["confirmPassword"],
 });
 
-type SignupForm = z.infer<typeof signupSchema>;
-
 export function SignupPage() {
   const [, setLocation] = useLocation();
   const { signup, isLoading } = useAuth();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState('');
 
   const {
     register,
@@ -50,7 +48,7 @@ export function SignupPage() {
     formState: { errors },
     setValue,
     watch,
-  } = useForm<SignupForm>({
+  } = useForm({
     resolver: zodResolver(signupSchema),
     defaultValues: {
       role: 'user',
@@ -59,7 +57,7 @@ export function SignupPage() {
 
   const selectedRole = watch('role');
 
-  const onSubmit = async (data: SignupForm) => {
+  const onSubmit = async (data) => {
     try {
       setError('');
       await signup(data.username, data.email, data.password, data.confirmPassword, data.role);
@@ -69,9 +67,8 @@ export function SignupPage() {
         description: `Welcome to LDR Survey CRM, ${data.username}!`,
       });
       
-      // Redirect to dashboard
       setLocation('/');
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message || 'Signup failed');
       toast({
         title: 'Signup Failed',
@@ -147,7 +144,7 @@ export function SignupPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="role">Role</Label>
-                <Select value={selectedRole} onValueChange={(value) => setValue('role', value as 'user' | 'admin')}>
+                <Select value={selectedRole} onValueChange={(value) => setValue('role', value)}>
                   <SelectTrigger data-testid="select-role">
                     <SelectValue placeholder="Select your role" />
                   </SelectTrigger>

@@ -4,15 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Clock, Sparkles } from "lucide-react";
 import { Loader2 } from "lucide-react";
 
-interface Holiday {
-  id: number;
-  name: string;
-  date: string;
-  description?: string;
-  type: "public" | "optional" | "company";
-  isActive: boolean;
-  createdAt: string;
-}
+// Removed TS interface
 
 const typeColors = {
   public: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
@@ -33,7 +25,7 @@ const staticHolidays = [
     name: "New Year's Day",
     date: "2025-01-01",
     description: "Beginning of the new calendar year",
-    type: "public" as const,
+    type: "public",
     isActive: true,
     createdAt: "2024-01-01"
   },
@@ -42,7 +34,7 @@ const staticHolidays = [
     name: "Republic Day",
     date: "2025-01-26",
     description: "Celebrates the date when Constitution of India came into effect",
-    type: "public" as const,
+    type: "public",
     isActive: true,
     createdAt: "2024-01-01"
   },
@@ -51,7 +43,7 @@ const staticHolidays = [
     name: "Independence Day",
     date: "2025-08-15",
     description: "Commemorates India's independence from British rule",
-    type: "public" as const,
+    type: "public",
     isActive: true,
     createdAt: "2024-01-01"
   },
@@ -60,7 +52,7 @@ const staticHolidays = [
     name: "Gandhi Jayanti",
     date: "2025-10-02",
     description: "Birthday of Mahatma Gandhi",
-    type: "public" as const,
+    type: "public",
     isActive: true,
     createdAt: "2024-01-01"
   },
@@ -69,7 +61,7 @@ const staticHolidays = [
     name: "Diwali",
     date: "2025-10-31",
     description: "Festival of lights celebrated across India",
-    type: "public" as const,
+    type: "public",
     isActive: true,
     createdAt: "2024-01-01"
   },
@@ -78,7 +70,7 @@ const staticHolidays = [
     name: "Christmas Day",
     date: "2025-12-25",
     description: "Celebrates the birth of Jesus Christ",
-    type: "public" as const,
+    type: "public",
     isActive: true,
     createdAt: "2024-01-01"
   },
@@ -87,7 +79,7 @@ const staticHolidays = [
     name: "LDR Surveys Foundation Day",
     date: "2025-03-15",
     description: "Anniversary of LDR Surveys establishment",
-    type: "company" as const,
+    type: "company",
     isActive: true,
     createdAt: "2024-01-01"
   },
@@ -96,7 +88,7 @@ const staticHolidays = [
     name: "Team Building Day",
     date: "2025-06-15",
     description: "Annual company team building activities",
-    type: "company" as const,
+    type: "company",
     isActive: true,
     createdAt: "2024-01-01"
   }
@@ -112,7 +104,7 @@ export function HolidaysPage() {
   // Use static holidays if API fails or returns empty data
   const displayHolidays = holidays.length > 0 ? holidays : staticHolidays;
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       weekday: 'long',
       year: 'numeric',
@@ -121,13 +113,13 @@ export function HolidaysPage() {
     });
   };
 
-  const isUpcoming = (dateString: string) => {
+  const isUpcoming = (dateString) => {
     const today = new Date();
     const holidayDate = new Date(dateString);
     return holidayDate >= today;
   };
 
-  const getDaysUntil = (dateString: string) => {
+  const getDaysUntil = (dateString) => {
     const today = new Date();
     const holidayDate = new Date(dateString);
     const diffTime = holidayDate.getTime() - today.getTime();
@@ -135,8 +127,8 @@ export function HolidaysPage() {
     return diffDays;
   };
 
-  const upcomingHolidays = displayHolidays.filter((holiday: Holiday) => isUpcoming(holiday.date));
-  const pastHolidays = displayHolidays.filter((holiday: Holiday) => !isUpcoming(holiday.date));
+  const upcomingHolidays = displayHolidays.filter((holiday) => isUpcoming(holiday.date));
+  const pastHolidays = displayHolidays.filter((holiday) => !isUpcoming(holiday.date));
 
   if (isLoading) {
     return (
@@ -179,8 +171,8 @@ export function HolidaysPage() {
           <CardContent>
             <div className="grid gap-4">
               {upcomingHolidays
-                .sort((a: Holiday, b: Holiday) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                .map((holiday: Holiday) => {
+                .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                .map((holiday) => {
                   const daysUntil = getDaysUntil(holiday.date);
                   return (
                     <div
@@ -236,8 +228,8 @@ export function HolidaysPage() {
         <CardContent>
           <div className="space-y-4">
             {displayHolidays
-              .sort((a: Holiday, b: Holiday) => new Date(a.date).getTime() - new Date(b.date).getTime())
-              .map((holiday: Holiday) => {
+              .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+              .map((holiday) => {
                 const upcoming = isUpcoming(holiday.date);
                 return (
                   <div

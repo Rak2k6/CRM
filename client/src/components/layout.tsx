@@ -77,19 +77,19 @@ function LayoutContent({ children }: LayoutProps) {
               const Icon = item.icon;
               return (
                 <li key={item.name}>
-                  <Link href={item.href}>
-                    <div
-                      className={`flex items-center ${isSidebarMinimized ? 'px-2 justify-center' : 'px-4'} py-3 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
-                        item.current
-                          ? "text-green-700 bg-green-50 border border-green-200"
-                          : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                      }`}
-                      title={isSidebarMinimized ? item.name : undefined}
-                    >
-                      <Icon className={`w-5 h-5 ${isSidebarMinimized ? '' : 'mr-3'}`} />
-                      {!isSidebarMinimized && item.name}
-                    </div>
-                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setLocation(item.href)}
+                    className={`w-full text-left flex items-center ${isSidebarMinimized ? 'px-2 justify-center' : 'px-4'} py-3 text-sm font-medium rounded-lg transition-colors ${
+                      item.current
+                        ? 'text-green-700 bg-green-50 border border-green-200'
+                        : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                    }`}
+                    title={isSidebarMinimized ? item.name : undefined}
+                  >
+                    <Icon className={`w-5 h-5 ${isSidebarMinimized ? '' : 'mr-3'}`} />
+                    {!isSidebarMinimized && item.name}
+                  </button>
                 </li>
               );
             })}

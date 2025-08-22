@@ -6,6 +6,7 @@ from .views import (
 	LeadViewSet,
 	CommunicationViewSet,
 	SurveyRecordViewSet,
+	UserViewSet,
 	list_admin,
 	list_ldr_contacts,
 	list_ldr_careers,
@@ -19,6 +20,7 @@ router.register(r'projects', ProjectViewSet, basename='project')
 router.register(r'leads', LeadViewSet, basename='lead')
 router.register(r'communications', CommunicationViewSet, basename='communication')
 router.register(r'survey-records', SurveyRecordViewSet, basename='survey-record')
+router.register(r'users', UserViewSet, basename='user')
 
 urlpatterns = [
 	path('signup', signup),

@@ -176,19 +176,19 @@ export function AdminSidebar({ isCollapsed, onToggle }: AdminSidebarProps) {
     }
 
     return (
-      <Link key={item.name} href={item.href || '#'}>
-        <Button
-          variant="ghost"
-          className={`w-full justify-start px-4 py-2 h-auto ${
-            isActive ? "bg-primary/10 text-primary" : "text-gray-700 hover:bg-gray-100"
-          }`}
-          style={{ paddingLeft: `${16 + depth * 16}px` }}
-          title={isCollapsed ? item.name : undefined}
-        >
-          <Icon className={`w-4 h-4 ${isCollapsed ? '' : 'mr-3'}`} />
-          {!isCollapsed && <span className="text-left">{item.name}</span>}
-        </Button>
-      </Link>
+      <Button
+        key={item.name}
+        variant="ghost"
+        onClick={() => item.href && setLocation(item.href)}
+        className={`w-full justify-start px-4 py-2 h-auto ${
+          isActive ? "bg-primary/10 text-primary" : "text-gray-700 hover:bg-gray-100"
+        }`}
+        style={{ paddingLeft: `${16 + depth * 16}px` }}
+        title={isCollapsed ? item.name : undefined}
+      >
+        <Icon className={`w-4 h-4 ${isCollapsed ? '' : 'mr-3'}`} />
+        {!isCollapsed && <span className="text-left">{item.name}</span>}
+      </Button>
     );
   };
 

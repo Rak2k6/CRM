@@ -1,6 +1,7 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from django.contrib.auth.models import User
 from .models import Customer, Project, Lead, Communication, SurveyRecord, AdminUser, LdrCareer, LdrContact, ClientRegister
 from .serializers import (
 	CustomerSerializer,
@@ -44,6 +45,75 @@ class SurveyRecordViewSet(viewsets.ModelViewSet):
 	serializer_class = SurveyRecordSerializer
 	lookup_field = 'pk'
 
+
+class UserViewSet(viewsets.ViewSet):
+	"""Basic users API to support admin User Management page.
+	Uses Django auth User for demonstration purposes.
+	"""
+
+	def list(self, request):
+		users = User.objects.all().order_by('-date_joined')
+		data = [
+			{
+				'id': user.id,
+				'username': user.username,
+				'email': user.email,
+				'role': 'admin' if user.is_staff else 'user',
+				'isActive': user.is_active,
+				'createdAt': user.date_joined,
+				'lastLogin': user.last_login,
+			}
+			for user in users
+		]
+		return Response(data)
+
+	def retrieve(self, request, pk=None):
+		try:
+			user = User.objects.get(pk=pk)
+		except User.DoesNotExist:
+			return Response({'detail': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+		data = {
+			'id': user.id,
+			'username': user.username,
+			'email': user.email,
+			'role': 'admin' if user.is_staff else 'user',
+			'isActive': user.is_active,
+			'createdAt': user.date_joined,
+			'lastLogin': user.last_login,
+		}
+		return Response(data)
+
+	def update(self, request, pk=None):
+		try:
+			user = User.objects.get(pk=pk)
+		except User.DoesNotExist:
+			return Response({'detail': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+
+		payload = request.data or {}
+		username = payload.get('username')
+		email = payload.get('email')
+		role = payload.get('role')  # 'admin' | 'user'
+		is_active = payload.get('isActive')
+
+		if username is not None:
+			user.username = username
+		if email is not None:
+			user.email = email
+		if role is not None:
+			user.is_staff = (role == 'admin')
+		if is_active is not None:
+			user.is_active = bool(is_active)
+		user.save()
+
+		return self.retrieve(request, pk)
+
+	def destroy(self, request, pk=None):
+		try:
+			user = User.objects.get(pk=pk)
+		except User.DoesNotExist:
+			return Response({'detail': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+		user.delete()
+		return Response({'status': 'deleted'})
 
 @api_view(['GET'])
 def list_admin(request):

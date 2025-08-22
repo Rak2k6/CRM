@@ -7,15 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { Search, Plus, Edit, Trash2, Phone, Mail, Building, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Customer } from "@shared/schema";
+// Removed TypeScript types for JS compatibility
 
 // Sub-components for better organization
-const CustomerCard: React.FC<{
-  customer: Customer;
-  onEdit: (customer: Customer) => void;
-  onDelete: (customer: Customer) => void;
-}> = React.memo(({ customer, onEdit, onDelete }) => {
-  const getStatusColor = useCallback((status: string) => {
+const CustomerCard = React.memo(({ customer, onEdit, onDelete }) => {
+  const getStatusColor = useCallback((status) => {
     switch (status) {
       case "active": return "bg-green-100 text-green-800";
       case "inactive": return "bg-gray-100 text-gray-800";
@@ -112,7 +108,7 @@ const CustomerCard: React.FC<{
 
 CustomerCard.displayName = 'CustomerCard';
 
-const LoadingSkeleton: React.FC = () => (
+const LoadingSkeleton = () => (
   <div className="space-y-4">
     {[...Array(3)].map((_, i) => (
       <Card key={i}>
@@ -126,7 +122,7 @@ const LoadingSkeleton: React.FC = () => (
   </div>
 );
 
-const ErrorAlert: React.FC<{ error: Error; onRetry: () => void }> = ({ error, onRetry }) => (
+const ErrorAlert = ({ error, onRetry }) => (
   <Alert variant="destructive">
     <AlertCircle className="h-4 w-4" />
     <AlertDescription>
@@ -138,24 +134,24 @@ const ErrorAlert: React.FC<{ error: Error; onRetry: () => void }> = ({ error, on
   </Alert>
 );
 
-export const CustomerManagement: React.FC = () => {
+export const CustomerManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
-  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+  const [editingCustomer, setEditingCustomer] = useState(null);
   const queryClient = useQueryClient();
 
-  const { data: customers, isLoading, error, refetch } = useQuery<Customer[], Error>({
+  const { data: customers, isLoading, error, refetch } = useQuery({
     queryKey: ["/api/customers"],
     queryFn: async () => {
       const response = await fetch("/api/customers");
       if (!response.ok) throw new Error('Failed to fetch customers');
       return response.json();
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (customerId: string) => {
+    mutationFn: async (customerId) => {
       const response = await fetch(`/api/customers/${customerId}`, {
         method: 'DELETE',
       });
@@ -176,12 +172,12 @@ export const CustomerManagement: React.FC = () => {
     );
   }, [customers, searchTerm]);
 
-  const handleEdit = useCallback((customer: Customer) => {
+  const handleEdit = useCallback((customer) => {
     setEditingCustomer(customer);
     setShowAddModal(true);
   }, []);
 
-  const handleDelete = useCallback((customer: Customer) => {
+  const handleDelete = useCallback((customer) => {
     if (window.confirm(`Are you sure you want to delete ${customer.firstName} ${customer.lastName}?`)) {
       deleteMutation.mutate(customer.id);
     }

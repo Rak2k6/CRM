@@ -26,7 +26,7 @@ export function AddLeadForm() {
   });
 
   const addLeadMutation = useMutation({
-    mutationFn: async (data: typeof formData) => {
+    mutationFn: async (data) => {
       const response = await fetch("/api/user/add-lead", {
         method: "POST",
         headers: {
@@ -63,7 +63,7 @@ export function AddLeadForm() {
         notes: ""
       });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to add lead",
@@ -72,7 +72,7 @@ export function AddLeadForm() {
     }
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     
     if (!formData.customerName.trim() || !formData.serviceType.trim()) {
@@ -87,7 +87,7 @@ export function AddLeadForm() {
     addLeadMutation.mutate(formData);
   };
 
-  const handleInputChange = (field: keyof typeof formData, value: string) => {
+  const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 

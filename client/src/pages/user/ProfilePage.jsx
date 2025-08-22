@@ -8,18 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Edit, Save, X, User } from "lucide-react";
 
-interface UserProfile {
-  id: number;
-  username: string;
-  email: string;
-  phoneNumber?: string;
-  company?: string;
-  firstName?: string;
-  lastName?: string;
-  role: string;
-  isActive: boolean;
-  createdAt: string;
-}
+// Removed TS interface
 
 export function ProfilePage() {
   const { user: authUser } = useAuth();
@@ -38,7 +27,7 @@ export function ProfilePage() {
   const { data: profile, isLoading } = useQuery({
     queryKey: ["/api/user/profile"],
     enabled: !!authUser,
-    onSuccess: (data: UserProfile) => {
+    onSuccess: (data) => {
       setFormData({
         username: data.username || "",
         email: data.email || "",
@@ -51,7 +40,7 @@ export function ProfilePage() {
   });
 
   const updateProfileMutation = useMutation({
-    mutationFn: async (updateData: typeof formData) => {
+    mutationFn: async (updateData) => {
       const response = await fetch("/api/user/profile", {
         method: "PUT",
         headers: {
@@ -76,7 +65,7 @@ export function ProfilePage() {
       setIsEditing(false);
       queryClient.invalidateQueries({ queryKey: ["/api/user/profile"] });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error", 
         description: error.message || "Failed to update profile",

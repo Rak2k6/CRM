@@ -5,12 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search, Plus, Edit, Trash2, TrendingUp, DollarSign, User } from "lucide-react";
 import { useState } from "react";
-import type { Lead } from "@shared/schema";
 
 export function LeadManagement() {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: leads, isLoading } = useQuery<Lead[]>({
+  const { data: leads, isLoading } = useQuery({
     queryKey: ["/api/leads"]
   });
 
@@ -20,7 +19,7 @@ export function LeadManagement() {
     lead.inquirySource?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
-  const getStageColor = (stage: string) => {
+  const getStageColor = (stage) => {
     switch (stage) {
       case "qualified": return "bg-green-100 text-green-800";
       case "proposal": return "bg-blue-100 text-blue-800";
@@ -32,7 +31,7 @@ export function LeadManagement() {
     }
   };
 
-  const getPriorityColor = (priority: string | null) => {
+  const getPriorityColor = (priority) => {
     switch (priority) {
       case "high": return "bg-red-100 text-red-800";
       case "medium": return "bg-yellow-100 text-yellow-800";

@@ -5,34 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, User, Building, Phone, Mail, AlertCircle, CheckCircle, XCircle, FolderPlus, Briefcase } from "lucide-react";
 import { Link } from "wouter";
-import type { User as UserProfile } from "@shared/schema";
+// Removed type-only imports and interfaces for JS compatibility
 
-interface UserProfile {
-  id: number;
-  username: string;
-  email: string;
-  phoneNumber?: string;
-  company?: string;
-  firstName?: string;
-  lastName?: string;
-  role: string;
-}
-
-interface UserLeave {
-  id: number;
-  leaveType: string;
-  startDate: string;
-  endDate: string;
-  status: "pending" | "approved" | "rejected";
-  totalDays: number;
-}
-
-interface Holiday {
-  id: number;
-  name: string;
-  date: string;
-  type: string;
-}
+// Interfaces removed
 
 const statusColors = {
   pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
@@ -49,7 +24,7 @@ const statusIcons = {
 export function UserDashboard() {
   const { user: authUser } = useAuth();
 
-  const { data: profile } = useQuery<UserProfile>({
+  const { data: profile } = useQuery({
     queryKey: ["/api/user/profile"],
     enabled: !!authUser
   });
@@ -57,13 +32,13 @@ export function UserDashboard() {
   const { data: recentLeaves = [] } = useQuery({
     queryKey: ["/api/user/leaves"],
     enabled: !!authUser,
-    select: (data: UserLeave[]) => data.slice(0, 3) // Show only recent 3 leaves
+    select: (data) => data.slice(0, 3)
   });
 
   const { data: upcomingHolidays = [] } = useQuery({
     queryKey: ["/api/holidays"],
     enabled: !!authUser,
-    select: (data: Holiday[]) => {
+    select: (data) => {
       const today = new Date();
       return data
         .filter(holiday => new Date(holiday.date) >= today)
@@ -72,7 +47,7 @@ export function UserDashboard() {
     }
   });
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -80,7 +55,7 @@ export function UserDashboard() {
     });
   };
 
-  const getDaysUntil = (dateString: string) => {
+  const getDaysUntil = (dateString) => {
     const today = new Date();
     const eventDate = new Date(dateString);
     const diffTime = eventDate.getTime() - today.getTime();
@@ -197,7 +172,7 @@ export function UserDashboard() {
               </div>
             ) : (
               <div className="space-y-3">
-                {recentLeaves.map((leave: UserLeave) => {
+                {recentLeaves.map((leave) => {
                   const StatusIcon = statusIcons[leave.status];
                   return (
                     <div key={leave.id} className="flex items-center justify-between p-3 border rounded-lg">
